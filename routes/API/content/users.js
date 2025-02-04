@@ -2,16 +2,16 @@ const  express = require("express")
 const  router = express.Router()
 const { Op } = require("sequelize")
 
-const { Article } = require("../../../models")
-const {filerBody}  = require("../Middleware/filter")
-const {getArticles} = require('../Middleware/getarticles')
+const { User } = require("../../../models")
+const {ufilterBody}  = require("../Middleware/Ufilter")
+const {getUser} = require('../Middleware/getuser')
 const {
         success,
         failure
     } = require('../../../utils/response')
 
 /**
- * 查询 全部文章
+ * 查询 全部用户
  */
 router.get('/', async function(req,res) {
 try{
@@ -29,22 +29,47 @@ try{
         offset:offset
     }
 
-    if (query.title) {
+    if (query.email) {
         condition.where = {
-            title: {
-                [Op.like]:  `%${query.title}%`
+            email: {
+                [Op.eq]: query.email
             }
-        }
+        };
     }
 
+    if (query.username) {
+        condition.where = {
+            username: {
+                [Op.eq]: query.username
+            }
+        };
+    }
+
+    if (query.nickname) {
+        condition.where = {
+            nickname: {
+                [Op.like]: `%${ query.nickname }%`
+            }
+        };
+    }
+
+    if (query.role) {
+        condition.where = {
+            role: {
+                [Op.eq]: query.role
+            }
+        };
+    }
+
+
     // 通过异步获取数据
-    const { count,rows} = await Article.findAndCountAll(condition)
+    const { count,rows} = await User.findAndCountAll(condition)
 
     res.json({
         status: true,
         message: "查询成功",
         data: {
-            articles: rows,
+            users: rows,
             pagination: {
                 total: count,
                 currentPage: currentPage,
@@ -59,28 +84,28 @@ try{
 })
 
 /**
- * 查询特定文章
+ * 查询特定用户
  */
 router.get('/:id', async function(req,res) {
    try {
-       const article = await getArticles(req)
+       const user = await getUser(req)
 
-       success(res,"查询文章，成功！",{article})
+       success(res,"查询用户，成功！",{user})
     }catch (err) {
        failure(res,err)
    }
 })
 
 /**
- * 新增文章
+ * 新增用户
  */
 router.post('/', async function(req,res) {
     try {
-        const body = filerBody(req)
+        const body = ufilterBody(req)
 
-        const article = await Article.create(body)
+        const user = await User.create(body)
 
-        success(res, "新增文章，成功！", {article}, 201)
+        success(res, "新增用户，成功！", {user}, 201)
 
     }catch (err) {
         failure(res,err)
@@ -88,14 +113,14 @@ router.post('/', async function(req,res) {
 })
 
 /**
- * 删除文章
+ * 删除用户
  */
 router.delete('/:id', async function(req,res) {
     try{
-        const article = await getArticles(req)
-        await article.destroy()
+        const user = await getUser(req)
+        await user.destroy()
 
-        success(res,"删除文章，成功！")
+        success(res,"删除用户，成功！")
 
 
     }catch (err) {
@@ -104,16 +129,16 @@ router.delete('/:id', async function(req,res) {
 })
 
 /**
- * 更新文章
+ * 更新用户
  */
 router.put('/:id', async function(req,res) {
     try{
-        const article = await getArticles(req)
+        const user = await getUser(req)
 
-        const body = filerBody(req)
-        await article.update(body)
+        const body = ufilterBody(req)
+        await user.update(body)
 
-        success(res,"更新文章，成功！",{article})
+        success(res,"更新用户，成功！",{user})
 
     }catch (err) {
         failure(res, err)
