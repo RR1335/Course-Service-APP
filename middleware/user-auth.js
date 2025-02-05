@@ -18,19 +18,9 @@ module.exports = async (req, res, next) => {
         // 从 jwt 中，解析出之前存入的 userId
         const { userId } = decoded;
 
-        // 查询一下，当前用户
-        const user = await User.findByPk(userId);
-        if (!user) {
-            throw new UnauthorizedError('用户不存在。')
-        }
 
-        // 验证当前用户是否是管理员
-        if (user.role !== 100) {
-            throw new UnauthorizedError('您没有权限使用当前接口。')
-        }
-
-        // 登录后，路由获取的当前用户信息，为 req.user
-        req.user = user;
+        // 方便后续路由使用
+        req.userId = userId
 
         next()
 

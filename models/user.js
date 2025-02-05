@@ -4,17 +4,17 @@ const {
 } = require('sequelize');
 // 引入加密算法中间件
 const  bcrypt = require('bcryptjs')
+const moment = require("moment/moment");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
       // define association here
       models.User.hasMany(models.Course, { as: 'courses' });
+
+      models.User.belongsToMany(models.Course, { through: models.Like, foreignKey: 'userId', as: 'likeCourses' });
+
     }
   }
   User.init({
@@ -103,6 +103,19 @@ module.exports = (sequelize, DataTypes) => {
         isUrl: { msg: '图片地址不正确。' }
       }
     },
+
+    createdAt: {
+      type: DataTypes.DATE,
+      get() {
+        return moment(this.getDataValue("createdAt")).format("YYYY年MM月DD日 HH:mm:ss");
+      }
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      get() {
+        return moment(this.getDataValue("updatedAt")).format("YYYY年MM月DD日 HH:mm:ss");
+      }
+    }
 
   }, {
     sequelize,

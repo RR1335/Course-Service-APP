@@ -114,6 +114,9 @@ router.post('/', async function(req,res) {
     try {
         const body = kfilterBody(req)
 
+        // 获取当前用户的ID
+        body.userId = req.user.id
+
         const course = await Course.create(body)
 
         success(res, "新增课程，成功！", {course}, 201)

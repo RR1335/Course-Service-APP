@@ -8,7 +8,8 @@ const  express = require("express")
 function kfilterBody(req) {
     return {
         categoryId: req.body.categoryId,
-        userId: req.body.userId,
+        // 通过 req.user.id 获取当前登录用户ID
+        // userId: req.body.userId,
         name: req.body.name,
         image: req.body.image,
         recommended: req.body.recommended,
