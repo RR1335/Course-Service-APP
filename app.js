@@ -2,6 +2,11 @@ const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
+// 环境变量的处理
+require('dotenv').config();
+
+// 增加验证接口
+const LoginAuth = require('./middleware/login-auth')
 
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
@@ -30,12 +35,13 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 
-app.use('/API/articles', ArticlesRouter)
-app.use('/API/category', CategoryRouter)
-app.use('/API/user', UserRouter)
-app.use('/API/course', CoursesRouter)
-app.use('/API/chapter', ChapterRouter)
-app.use('/API/charts', ChartsRouter)
+app.use('/API/articles',LoginAuth, ArticlesRouter)
+app.use('/API/category',LoginAuth, CategoryRouter)
+app.use('/API/user',LoginAuth, UserRouter)
+app.use('/API/course',LoginAuth, CoursesRouter)
+app.use('/API/chapter',LoginAuth, ChapterRouter)
+app.use('/API/charts',LoginAuth, ChartsRouter)
+// 登录路由 不能增加登录验证LoginAuth ，否则变成未登录前要验证登录了
 app.use('/API/auth', AdminAuthRouter)
 
 module.exports = app
