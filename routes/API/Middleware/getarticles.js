@@ -1,6 +1,6 @@
 const  express = require('express');
 const { Article } = require("../../../models")
-const {NotfoundError} = require('../../../utils/response')
+const {NotFoundError} = require('../../../utils/errors');
 /**
  * 公共方法：查询数据
  */
@@ -12,7 +12,7 @@ async function getArticles(req) {
 
     //没有找到文章， throw 异常
     if (!article) {
-        throw new NotfoundError(`ID: ${id} 的文章未找到！！`)
+        throw new NotFoundError(`ID: ${id} 的文章未找到！！`)
     }
 
     return article

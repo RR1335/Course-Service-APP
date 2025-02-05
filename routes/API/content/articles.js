@@ -8,7 +8,8 @@ const {getArticles} = require('../Middleware/getarticles')
 const {
         success,
         failure
-    } = require('../../../utils/response')
+    } = require('../../../utils/responses')
+
 
 /**
  * 查询 全部文章

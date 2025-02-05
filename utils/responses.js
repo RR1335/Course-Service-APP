@@ -1,13 +1,14 @@
+const  {  } = require('../utils/errors')
 
 /**
  * 自定义 404 错误
  */
-class NotfoundError extends Error {
-    constructor(message) {
-        super(message)
-        this.name = 'NotfoundError'
-    }
-}
+// class NotfoundError extends Error {
+//     constructor(message) {
+//         super(message)
+//         this.name = 'NotfoundError'
+//     }
+// }
 
 /**
  * 成功提示信息
@@ -33,18 +34,26 @@ function failure(res,error) {
     if (error.name === 'SequelizeValidationError') {
         const errors = error.errors.map(error => error.message)
 
-        res.status(400).json({
+    if (error.name === 'BadRequestError') {
+        return res.status(400).json({
+            status: false,
+            message: '请求参数错误',
+            errors: [error.message]
+        });
+    }
+
+    if (error.name === 'UnauthorizedError') {
+        return res.status(401).json({
+            status: false,
+            message: '认证失败',
+            errors: [error.message]
+        });
+    }
+
+   res.status(400).json({
             status: false,
             message: '请求参数错误，请重新设置',
             errors
-        })
-    }
-
-    if (error.name === 'NotFoundError') {
-        res.status(404).json({
-            status: false,
-            message:'数据不存在 ～～～',
-            errors:[error.message]
         })
     }
 
@@ -59,7 +68,6 @@ function failure(res,error) {
 
 
 module.exports = {
-    NotfoundError,
     success,
     failure
 }

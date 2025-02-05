@@ -2,17 +2,16 @@ const  express = require("express")
 const  router = express.Router()
 const { Op } = require("sequelize")
 
-const { Category,Course} = require("../../../models")
-const {cfilerBody}  = require("../Middleware/Cfilter")
-const {getCategory} = require('../Middleware/getcategory')
+const { Chapter, Course } = require("../../../models")
+const {cpfilterBody}  = require("../Middleware/cpfilter")
+const {getChapters,getCondition} = require('../Middleware/getChapter')
 const {
         success,
         failure
     } = require('../../../utils/responses')
 
-
 /**
- * 查询 全部分类
+ * 查询 全部章节
  */
 router.get('/', async function(req,res) {
 try{
@@ -24,28 +23,40 @@ try{
 
     const  offset = (currentPage - 1) * pageSize
 
-    const condition = {
-        order:[['id','DESC']],
-        limit: pageSize,
-        offset:offset
+    if (!query.courseId) {
+        throw new Error('获取章节列表失败，课程ID不能为空。');
     }
 
-    if (query.name) {
-        condition.where = {
-            name: {
-                [Op.like]:  `%${query.name}%`
-            }
+    const condition = {
+        ...getCondition(),
+        order: [['rank', 'ASC'], ['id', 'ASC']],
+        limit: pageSize,
+        offset: offset
+    };
+
+    condition.where = {
+        courseId: {
+            [Op.eq]: query.courseId
         }
+    };
+
+    if (query.title) {
+        condition.where = {
+            title: {
+                [Op.like]: `%${ query.title }%`
+            }
+        };
     }
+
 
     // 通过异步获取数据
-    const { count,rows} = await Category.findAndCountAll(condition)
+    const { count,rows} = await Chapter.findAndCountAll(condition)
 
     res.json({
         status: true,
         message: "查询成功",
         data: {
-            category: rows,
+            chapters: rows,
             pagination: {
                 total: count,
                 currentPage: currentPage,
@@ -60,28 +71,28 @@ try{
 })
 
 /**
- * 查询特定分类
+ * 查询特定章节
  */
 router.get('/:id', async function(req,res) {
    try {
-       const category = await getCategory(req)
+       const chapter = await getChapters(req)
 
-       success(res,"查询分类，成功！",{category})
+       success(res,"查询章节，成功！",{chapter})
     }catch (err) {
        failure(res,err)
    }
 })
 
 /**
- * 新增分类
+ * 新增章节
  */
 router.post('/', async function(req,res) {
     try {
-        const body = cfilerBody(req)
+        const body = cpfilterBody(req)
 
-        const category = await Category.create(body)
+        const chapter = await Chapter.create(body)
 
-        success(res, "新增分类，成功！", {category}, 201)
+        success(res, "新增章节，成功！", {chapter}, 201)
 
     }catch (err) {
         failure(res,err)
@@ -89,23 +100,16 @@ router.post('/', async function(req,res) {
 })
 
 /**
- * 删除分类
+ * 删除章节
  */
 router.delete('/:id', async function(req,res) {
     try{
-        const category = await getCategory(req)
-
-        // 判断是否有关联的课程，有则终止删除
-        const count = await Course.count({ where: { categoryId: req.params.id } });
-        if (count > 0) {
-            throw new Error('当前分类有课程，无法删除。');
-        }
+        const chapter = await getChapters(req)
 
 
+        await chapter.destroy()
 
-        await category.destroy()
-
-        success(res,"删除分类，成功！")
+        success(res,"删除章节，成功！")
 
 
     }catch (err) {
@@ -114,16 +118,16 @@ router.delete('/:id', async function(req,res) {
 })
 
 /**
- * 更新分类
+ * 更新章节
  */
 router.put('/:id', async function(req,res) {
     try{
-        const category = await getCategory(req)
+        const chapter = await getChapters(req)
 
-        const body = cfilerBody(req)
-        await category.update(body)
+        const body = cpfilterBody(req)
+        await chapter.update(body)
 
-        success(res,"更新分类，成功！",{category})
+        success(res,"更新章节，成功！",{chapter})
 
     }catch (err) {
         failure(res, err)

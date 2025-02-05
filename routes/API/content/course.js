@@ -2,13 +2,13 @@ const  express = require("express")
 const  router = express.Router()
 const { Op } = require("sequelize")
 
-const { Course,Category, User } = require("../../../models")
+const { Course,Category, User, Chapter} = require("../../../models")
 const {kfilterBody}  = require("../Middleware/kfilter")
 const {getCourse,getCondition} = require('../Middleware/getcourse')
 const {
         success,
         failure
-    } = require('../../../utils/response')
+    } = require('../../../utils/responses')
 
 /**
  * 查询 全部课程
@@ -129,6 +129,13 @@ router.post('/', async function(req,res) {
 router.delete('/:id', async function(req,res) {
     try{
         const course = await getCourse(req)
+
+        // 无关联数据再删除
+        const count = await Chapter.count({ where: { courseId: req.params.id } });
+        if (count > 0) {
+            throw new Error('当前课程有章节，无法删除。');
+        }
+
         await course.destroy()
 
         success(res,"删除课程，成功！")

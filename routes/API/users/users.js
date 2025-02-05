@@ -3,12 +3,13 @@ const  router = express.Router()
 const { Op } = require("sequelize")
 
 const { User } = require("../../../models")
-const {ufilterBody}  = require("../Middleware/Ufilter")
-const {getUser} = require('../Middleware/getuser')
+const {ufilterBody}  = require("./Ufilter")
+const {getUser} = require('./getuser')
 const {
         success,
         failure
-    } = require('../../../utils/response')
+    } = require('../../../utils/responses')
+
 
 /**
  * 查询 全部用户

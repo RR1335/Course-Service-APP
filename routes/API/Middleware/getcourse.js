@@ -1,6 +1,6 @@
 const  express = require('express');
 const { Course,Category,User } = require("../../../models")
-const {NotfoundError} = require('../../../utils/response')
+const {NotfoundError} = require('../../../utils/errors')
 
 
 function getCondition() {

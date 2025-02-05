@@ -1,6 +1,6 @@
 const  express = require('express');
 const { User } = require("../../../models")
-const {NotfoundError} = require('../../../utils/response')
+const {NotfoundError} = require('../../../utils/errors')
 /**
  * 公共方法：查询数据
  */
