@@ -13,12 +13,13 @@ RR1335
 
 #配置环境变量
 
-PORT=3000
-SECRET= your secret jwt 
+    PORT=3000
+
+    SECRET= your secret jwt 
 
 #安装和执行
 
-npm i 
+    npm i 
 
 其它配置信息都在 package.json 中查看
 
