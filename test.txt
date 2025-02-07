@@ -1,7 +1,0 @@
-sequelize migration:create --name add-deleted-at-to-article
-
-npx sequelize-cli db:create --charset utf8mb4 --name add-deleted-at-to-article utf8mb4_general_ci --env production
-// 创建库的命令，注意是生产环境 --env production
-
-npx sequelize-cli db:create --charset utf8mb4 --collate utf8mb4_general_ci --env production
-// 创建库的命令，注意是生产环境 --env production
