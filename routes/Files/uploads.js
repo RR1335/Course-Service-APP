@@ -11,7 +11,7 @@ const { BadRequest } = require('http-errors')
  */
 router.post('/aliyun', function (req, res) {
     try {
-        singleFileUpload(req, res, function (error) {
+        singleFileUpload(req, res, async  function (error) {
             if (error) {
                 return failure(res, error);
             }
@@ -21,7 +21,7 @@ router.post('/aliyun', function (req, res) {
             }
 
             // 附件信息的关联
-            Attachment.create({
+            await Attachment.create({
                 ...req.file,
                 userId: req.userId,
                 fullpath: req.file.path + '/' + req.file.filename,
