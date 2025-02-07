@@ -1,0 +1,7 @@
+        "expire": "2025-02-08 05:25:17",
+        "policy": "eyJleHBpcmF0aW9uIjoiMjAyNS0wMi0wOFQxMDoyNToxNy4yMTNaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsNTI0Mjg4MF0seyJidWNrZXQiOiJiYWlqaW5nYml6In0sWyJlcSIsIiRrZXkiLCJ1cGxvYWRzL2Q0ODJiNDY2LWVjM2QtNGFkYi04ZjZlLWFmZjY2ZDI2ZjBmMSJdLFsiaW4iLCIkY29udGVudC10eXBlIixbImltYWdlL2pwZWciLCJpbWFnZS9wbmciLCJpbWFnZS9naWYiLCJpbWFnZS93ZWJwIl1dXX0=",
+        "signature": "5NOLX519cuDQuz1xXREkbJCa3jY=",
+        "accessid": "LTAI5tF37YY5JZ4FsrqFTsux",
+        "host": "https://baijingbiz.oss-cn-beijing.aliyuncs.com",
+        "key": "uploads/d482b466-ec3d-4adb-8f6e-aff66d26f0f1",
+        "url": "https://baijingbiz.oss-cn-beijing.aliyuncs.com/uploads/d482b466-ec3d-4adb-8f6e-aff66d26f0f1"
