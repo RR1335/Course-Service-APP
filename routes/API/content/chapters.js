@@ -29,22 +29,17 @@ try{
 
     const condition = {
         ...getCondition(),
+        where: {},
         order: [['rank', 'ASC'], ['id', 'ASC']],
         limit: pageSize,
         offset: offset
     };
 
-    condition.where = {
-        courseId: {
-            [Op.eq]: query.courseId
-        }
-    };
+    condition.where.courseId = query.courseId
 
     if (query.title) {
-        condition.where = {
-            title: {
+        condition.where.title = {
                 [Op.like]: `%${ query.title }%`
-            }
         };
     }
 
@@ -90,7 +85,10 @@ router.post('/', async function(req,res) {
     try {
         const body = cpfilterBody(req)
 
+        //创建章节
         const chapter = await Chapter.create(body)
+        //章节创建成功后，章节数加一
+        await Course.increment('chaptersCount',{where:{id:chapter.courseId}})
 
         success(res, "新增章节，成功！", {chapter}, 201)
 
@@ -106,8 +104,10 @@ router.delete('/:id', async function(req,res) {
     try{
         const chapter = await getChapters(req)
 
-
+        //删除章节
         await chapter.destroy()
+        // 章节统计减一
+        await Course.decrement('chaptersCount',{where:{id:chapter.courseId}})
 
         success(res,"删除章节，成功！")
 

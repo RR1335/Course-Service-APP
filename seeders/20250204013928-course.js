@@ -10,6 +10,7 @@ module.exports = {
         name: 'Node.js入门',
         recommended: true,
         introductory: true,
+        chaptersCount: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -19,6 +20,7 @@ module.exports = {
         name: 'Go lang实践升级',
         recommended: true,
         introductory: false,
+        chaptersCount: 2,
         createdAt: new Date(),
         updatedAt: new Date()
       },

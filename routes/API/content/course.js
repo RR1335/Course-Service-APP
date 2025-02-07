@@ -25,6 +25,7 @@ try{
 
     const condition = {
         ...getCondition(),
+        where:{},
         order: [['id', 'DESC']],
         limit: pageSize,
         offset: offset
@@ -32,43 +33,29 @@ try{
 
 
     if (query.categoryId) {
-        condition.where = {
-            categoryId: {
-                [Op.eq]: query.categoryId
-            }
-        };
+        condition.where.categoryId = query.categoryId
     }
 
     if (query.userId) {
-        condition.where = {
-            userId: {
-                [Op.eq]: query.userId
-            }
-        };
+        condition.where.userId = query.userId
     }
 
     if (query.name) {
-        condition.where = {
-            name: {
+        condition.where.name = {
                 [Op.like]: `%${ query.name }%`
-            }
         };
     }
 
     if (query.recommended) {
-        condition.where = {
-            recommended: {
+        condition.where.recommended = {
                 // 需要转布尔值
                 [Op.eq]: query.recommended === 'true'
-            }
         };
     }
 
     if (query.introductory) {
-        condition.where = {
-            introductory: {
+        condition.where.introductory = {
                 [Op.eq]: query.introductory === 'true'
-            }
         };
     }
 

@@ -25,41 +25,28 @@ try{
     const  offset = (currentPage - 1) * pageSize
 
     const condition = {
+        where:{},
         order:[['id','DESC']],
         limit: pageSize,
         offset:offset
     }
 
     if (query.email) {
-        condition.where = {
-            email: {
-                [Op.eq]: query.email
-            }
-        };
+        condition.where.email = query.email
     }
 
     if (query.username) {
-        condition.where = {
-            username: {
-                [Op.eq]: query.username
-            }
-        };
+        condition.where.username = query.username
     }
 
     if (query.nickname) {
-        condition.where = {
-            nickname: {
-                [Op.like]: `%${ query.nickname }%`
-            }
+        condition.where.nickname = {
+            [Op.like]: `%${ query.nickname }%`
         };
     }
 
     if (query.role) {
-        condition.where = {
-            role: {
-                [Op.eq]: query.role
-            }
-        };
+        condition.where.role = query.role
     }
 
 
@@ -70,7 +57,7 @@ try{
         status: true,
         message: "查询成功",
         data: {
-            users: rows,
+            articles: rows,
             pagination: {
                 total: count,
                 currentPage: currentPage,
@@ -83,6 +70,27 @@ try{
 }
 
 })
+
+
+/**
+ * 查询当前用户信息
+ * 在 router.get('/:id', 之前，否则会将 me 作为 id 进行查询；路由次序要注意。
+ */
+router.get('/me', async function (req, res) {
+    try {
+        const user = req.user;
+        success(res, '查询当前用户信息成功。', { user });
+
+        // 获取到当前用户
+        req.user = user
+        console.log(req.user)
+
+    } catch (error) {
+        failure(res, error);
+    }
+
+});
+
 
 /**
  * 查询特定用户
