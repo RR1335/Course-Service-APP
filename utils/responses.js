@@ -1,5 +1,6 @@
 
 const createError = require('http-errors');
+const multer = require('multer');
 
 /**
  * 自定义 404 错误
@@ -45,6 +46,14 @@ function failure(res, error) {
     } else if (error instanceof createError.HttpError) {  // http-errors 库创建的错误
         statusCode = error.status;
         errors = error.message;
+    }else if (error instanceof multer.MulterError) {
+        if (error.code === 'LIMIT_FILE_SIZE') {
+            statusCode = 413;
+            errors = '文件大小超出限制。';
+        } else {
+            statusCode = 400;
+            errors = error.message;
+        }
     }
 
     res.status(statusCode).json({

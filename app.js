@@ -68,13 +68,13 @@ app.use(cors(corsOptions));
 
 // view 页面接口
 app.use('/', indexRouter)
-app.use('/users',userAuth, usersRouter)
 app.use('/categories', categoriesViewRouter)
 app.use('/courses', coursesViewRouter)
 app.use('/chapters', chaptersViewRouter)
 app.use('/articles', articlesViewRouter)
 app.use('/search', searchViewRouter)
 app.use('/auth', authViewRouter)
+app.use('/users',userAuth, usersRouter)
 app.use('/likes',userAuth, likesViewRouter)
 // 用户上传图片
 app.use('/UploadFiles',userAuth,UploadFilesRouter)

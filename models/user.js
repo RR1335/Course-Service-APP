@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
 
       models.User.belongsToMany(models.Course, { through: models.Like, foreignKey: 'userId', as: 'likeCourses' });
 
+      models.User.hasMany(models.Attachment, { as: 'attachments' });
+
     }
   }
   User.init({
