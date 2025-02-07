@@ -31,9 +31,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     content: {
       type: DataTypes.STRING
+    },
+    deletedAt: {
+      type: DataTypes.DATE
     }
   }, {
     sequelize,
+    paranoid: true,
     modelName: 'Article',
   });
   return Article;

@@ -31,6 +31,14 @@ try{
         offset:offset
     }
 
+    //已经 删除的文章list
+    if (query.deleted === 'true') {
+        condition.paranoid = false
+        condition.where.deletedAt = {
+            [Op.not]: null
+        }
+    }
+
     if (query.title) {
         condition.where.title = {
                 [Op.like]:  `%${query.title}%`
@@ -88,20 +96,50 @@ router.post('/', async function(req,res) {
 })
 
 /**
- * 删除文章
+ * 删除文章——软删除
  */
-router.delete('/:id', async function(req,res) {
-    try{
-        const article = await getArticles(req)
-        await article.destroy()
+router.post('/delete', async function (req, res) {
+    try {
+        const { id } = req.body;
 
-        success(res,"删除文章，成功！")
+        // req.body 可以 Array ，即：同时删除多个
+        await Article.destroy({ where: { id: id } });
+
+        success(res, '已删除到回收站。');
+    } catch (error) {
+        failure(res, error);
+    }
+});
 
 
-    }catch (err) {
-        failure(res, err)
+router.post('/delDone',async function(req,res) {
+    try {
+        const {id} = req.body
+
+        await Article.destroy({
+            where: {id: id},
+            force: true
+        })
+        success(res,'已经彻底删除')
+    } catch (error) {
+        failure(res,err)
     }
 })
+
+/**
+ * 恢复文章
+ */
+router.post('/restore', async function (req, res) {
+    try {
+        const { id } = req.body;
+
+        await Article.restore({ where: { id: id } });
+
+        success(res, '已恢复成功。')
+    } catch (error) {
+        failure(res, error);
+    }
+});
 
 /**
  * 更新文章
