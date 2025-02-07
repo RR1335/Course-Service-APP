@@ -9,6 +9,7 @@ const {
         success,
         failure
     } = require('../../../utils/responses')
+const {  Conflict } = require('http-errors');
 
 /**
  * 查询 全部课程
@@ -123,7 +124,7 @@ router.delete('/:id', async function(req,res) {
         // 无关联数据再删除
         const count = await Chapter.count({ where: { courseId: req.params.id } });
         if (count > 0) {
-            throw new Error('当前课程有章节，无法删除。');
+            throw new Conflict('当前课程有章节，无法删除。');
         }
 
         await course.destroy()

@@ -1,6 +1,6 @@
 const  express = require('express');
 const { Chapter,Course } = require("../../../models")
-const {NotfoundError} = require('../../../utils/errors')
+const {NotFound} = require('http-errors')
 
 
 function getCondition() {
@@ -31,7 +31,7 @@ async function getChapters(req) {
 
     //没有找到文章， throw 异常
     if (!chapter) {
-        throw new NotfoundError(`ID: ${id} 的文章未找到！！`)
+        throw new NotFound(`ID: ${id} 的文章未找到！！`)
     }
 
     return chapter

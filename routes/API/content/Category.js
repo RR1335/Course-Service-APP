@@ -9,6 +9,8 @@ const {
         success,
         failure
     } = require('../../../utils/responses')
+const { Conflict } = require('http-errors')
+
 
 
 /**
@@ -127,7 +129,7 @@ router.delete('/:id', async function(req,res) {
         // 判断是否有关联的课程，有则终止删除
         const count = await Course.count({ where: { categoryId: req.params.id } });
         if (count > 0) {
-            throw new Error('当前分类有课程，无法删除。');
+            throw new Conflict('当前分类有课程，无法删除。');
         }
 
 

@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // const {JWTCODE} = require('../../../config/constants');
 
-const { BadRequestError, UnauthorizedError, NotFoundError } = require('../../../utils/errors');
+const { BadRequest, Unauthorized, NotFound } = require('http-errors');
 const { success, failure } = require('../../../utils/responses');
 
 
@@ -18,11 +18,11 @@ router.post('/login', async (req, res) => {
         const { login , password } = req.body;
 
         if (!login) {
-            throw  new BadRequestError('Email/UserName 必填')
+            throw  new BadRequest('Email/UserName 必填')
         }
 
         if (!password) {
-            throw new BadRequestError('PassWord 必填')
+            throw new BadRequest('PassWord 必填')
         }
 
         const condition = {
@@ -41,18 +41,18 @@ router.post('/login', async (req, res) => {
         const user = await  User.findOne(condition)
 
         if (!user) {
-            throw new NotFoundError('用户不存在，请重新输入；或 注册')
+            throw new NotFound('用户不存在，请重新输入；或 注册')
         }
 
         // 验证密码是否正确
         const isPasswordValid = bcrypt.compareSync(password, user.password);  // bcryptjs 提供的比对方法
         if (!isPasswordValid) {
-            throw new UnauthorizedError('密码错误。');
+            throw new Unauthorized('密码错误。');
         }
 
         // 验证是否管理员
         if (user.role !== 100) {
-            throw new UnauthorizedError('您没有权限登录管理员后台。');
+            throw new Unauthorized('您没有权限登录管理员后台。');
         }
 
         // 生成身份验证令牌

@@ -1,6 +1,6 @@
 const  express = require('express');
 const { User } = require("../../../models")
-const {NotfoundError} = require('../../../utils/errors')
+const {NotFound} = require('http-errors')
 /**
  * 公共方法：查询数据
  */
@@ -12,7 +12,7 @@ async function getUser(req) {
 
     //没有找到文章， throw 异常
     if (!user) {
-        throw new NotfoundError(`ID: ${id} 的用户名未找到！！`)
+        throw new NotFound(`ID: ${id} 的用户名未找到！！`)
     }
 
     return user

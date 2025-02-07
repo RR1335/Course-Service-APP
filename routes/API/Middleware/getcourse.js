@@ -1,6 +1,6 @@
 const  express = require('express');
 const { Course,Category,User } = require("../../../models")
-const {NotfoundError} = require('../../../utils/errors')
+const {NotFound} = require('http-errors')
 
 
 function getCondition() {
@@ -35,7 +35,7 @@ async function getCourse(req) {
 
     const course = await Course.findByPk(id, condition);
     if (!course) {
-        throw new NotfoundError(`ID: ${ id }的课程未找到。`)
+        throw new NotFound(`ID: ${ id }的课程未找到。`)
     }
 
     return course;

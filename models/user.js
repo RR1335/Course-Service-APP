@@ -5,6 +5,8 @@ const {
 // 引入加密算法中间件
 const  bcrypt = require('bcryptjs')
 const moment = require("moment/moment");
+const { BadRequest } = require('http-errors');
+
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -55,12 +57,12 @@ module.exports = (sequelize, DataTypes) => {
       set(value) {
         // 检查是否为空
         if (!value) {
-          throw new Error('密码必须填写。');
+          throw new BadRequest('密码必须填写。');
         }
 
         // 检查长度
         if (value.length < 6 || value.length > 45) {
-          throw new Error('密码长度必须是6 ~ 45之间。');
+          throw new BadRequest('密码长度必须是6 ~ 45之间。');
         }
 
         // 如果通过所有验证，进行hash处理并设置值

@@ -9,6 +9,7 @@ const {
         success,
         failure
     } = require('../../../utils/responses')
+const {  BadRequest } = require('http-errors');
 
 /**
  * 查询 全部章节
@@ -24,7 +25,7 @@ try{
     const  offset = (currentPage - 1) * pageSize
 
     if (!query.courseId) {
-        throw new Error('获取章节列表失败，课程ID不能为空。');
+        throw new BadRequest('获取章节列表失败，课程ID不能为空。');
     }
 
     const condition = {

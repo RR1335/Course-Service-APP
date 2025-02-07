@@ -1,5 +1,5 @@
 const {User} = require('../models');
-const {NotFoundError} = require('../utils/errors')
+const {NotFound} = require('http-errors')
 
 /**
  * 查询当前用户信息
@@ -18,7 +18,7 @@ async function getUser(req, showPassword = false) {
 
     const user = await User.findByPk(id, condition);
     if (!user) {
-        throw new NotFoundError(`ID: ${ id }的用户未找到。`)
+        throw new NotFound(`ID: ${ id }的用户未找到。`)
     }
 
     return user;

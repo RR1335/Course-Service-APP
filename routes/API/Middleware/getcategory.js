@@ -1,6 +1,6 @@
 const  express = require('express');
 const { Category,Course } = require("../../../models")
-const {NotfoundError} = require('../../../utils/errors')
+const {NotFound} = require('http-errors')
 /**
  * 公共方法：查询数据
  */
@@ -21,7 +21,7 @@ async function getCategory(req) {
 
     //没有找到文章， throw 异常
     if (!category) {
-        throw new NotfoundError(`ID: ${id} 的分类未找到！！`)
+        throw new NotFound(`ID: ${id} 的分类未找到！！`)
     }
 
     return category
