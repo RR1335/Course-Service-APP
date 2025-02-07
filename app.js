@@ -41,6 +41,9 @@ const searchViewRouter = require('./routes/view/search')
 const authViewRouter = require('./routes/view/users/auth')
 const likesViewRouter = require('./routes/view/users/like')
 
+//文件上传路由
+const UploadFilesRouter = require('./routes/Files/uploads')
+
 
 const app = express()
 
@@ -73,6 +76,8 @@ app.use('/articles', articlesViewRouter)
 app.use('/search', searchViewRouter)
 app.use('/auth', authViewRouter)
 app.use('/likes',userAuth, likesViewRouter)
+// 用户上传图片
+app.use('/UploadFiles',userAuth,UploadFilesRouter)
 
 
 // API 后端接口

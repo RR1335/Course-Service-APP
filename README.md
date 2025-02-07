@@ -23,3 +23,13 @@ RR1335
 
 其它配置信息都在 package.json 中查看
 
+#阿里云的环境配置
+
+    NODE_ENV=development
+    PORT=
+    SECRET=
+    ALIYUN_ACCESS_KEY_ID=
+    ALIYUN_ACCESS_KEY_SECRET=
+    ALIYUN_BUCKET=
+    ALIYUN_REGION=
+
