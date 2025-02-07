@@ -11,11 +11,13 @@ const {
 /**
  * 根据用户统计性别
  */
-router.get('/gender', async function (req, res) {
+router.get('/sex', async function (req, res) {
     try {
-        const male = await User.count({ where: { sex: 0 } });
-        const female = await User.count({ where: { sex: 1 } });
-        const unknown = await User.count({ where: { sex: 2 } });
+        const [male, female, unknown] = await Promise.all([
+            User.count({ where: { sex: 0 } }),
+            User.count({ where: { sex: 1 } }),
+            User.count({ where: { sex: 2 } })
+        ]);
 
         const data = [
             { value: male, name: '男性' },
@@ -24,11 +26,11 @@ router.get('/gender', async function (req, res) {
         ];
 
         success(res, '查询用户性别成功。', { data });
-
     } catch (error) {
         failure(res, error);
     }
 });
+
 
 
 router.get('/user', async (req, res) => {
@@ -44,18 +46,6 @@ router.get('/user', async (req, res) => {
             data.months.push(item.month);
             data.values.push(item.value);
         });
-
-        // 使用 Sequelize 查询的结果
-        // const results = await User.findAll({
-        //     attributes: [
-        //         [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m'), 'month'],  // 使用 DATE_FORMAT 转换日期格式
-        //         [sequelize.fn('COUNT', '*'), 'value']                                         // 统计每个月的用户数量
-        //     ],
-        //     group: ['month'],            // 按年月分组
-        //     order: [['month', 'ASC']],   // 按年月排序,
-        //     raw: true
-        // })
-
 
         success(res, '查询每月用户数量成功。', { data });
     } catch (error) {

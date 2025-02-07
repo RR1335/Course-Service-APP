@@ -56,21 +56,24 @@ router.get('/:id', async function (req, res) {
             throw new NotFound(`ID: ${ id }的课程未找到。`)
         }
 
-        // 查询课程关联的分类
-        const category = await course.getCategory({
-            attributes: ['id', 'name'],
-        });
+        const [category,user,chapters] = await Promise.all([
+            // 查询课程关联的分类
+            course.getCategory({
+                attributes: ['id', 'name'],
+            }),
 
-        // 查询课程关联的用户
-        const user = await course.getUser({
-            attributes: ['id', 'username', 'nickname', 'avatar', 'company'],
-        });
+            // 查询课程关联的用户
+            course.getUser({
+                attributes: ['id', 'username', 'nickname', 'avatar', 'company'],
+            }),
 
-        // 查询课程关联的章节
-        const chapters = await course.getChapters({
-            attributes: ['id', 'title', 'rank', 'createdAt'],
-            order: [['rank', 'ASC'], ['id', 'DESC']]
-        });
+            // 查询课程关联的章节
+            course.getChapters({
+                attributes: ['id', 'title', 'rank', 'createdAt'],
+                order: [['rank', 'ASC'], ['id', 'DESC']]
+            }),
+        ])
+
 
         success(res, '查询课程成功。', { course, category, user, chapters });
     } catch (error) {
@@ -79,45 +82,6 @@ router.get('/:id', async function (req, res) {
 });
 
 
-// router.get('/:id', async function (req, res) {
-//     try {
-//         const { id } = req.params;
-//         const condition = {
-//             attributes: { exclude: ['CategoryId', 'UserId'] },
-//             include: [
-//                 {
-//                     model: Category,
-//                     as: 'category',
-//                     attributes: ['id', 'name']
-//                 },
-//                 {
-//                     model: Chapter,
-//                     as: 'chapters',
-//                     attributes: ['id', 'title', 'rank', 'createdAt'],
-//                 },
-//                 {
-//                     model: User,
-//                     as: 'user',
-//                     attributes: ['id', 'username', 'nickname', 'avatar', 'company']
-//                 }
-//             ],
-//             order: [
-//                 [{model:Chapter,as: 'chapter'}, 'rank','ASC'],
-//                 [{model:Chapter,as: 'chapter'}, 'rank','DESC'],
-//             ]
-//
-//         };
-//
-//         const course = await Course.findByPk(id, condition);
-//         if (!course) {
-//             throw new NotFound(`ID: ${ id }的课程未找到。`)
-//         }
-//
-//         success(res, '查询课程成功。', { course });
-//     } catch (error) {
-//         failure(res, error);
-//     }
-// });
 
 
 module.exports = router;
