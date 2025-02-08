@@ -9,11 +9,15 @@ const logger = winston.createLogger({
     //
     // format 表示日志的格式，例如，json格式
     //
-    format: winston.format.json(),
+    // format: winston.format.json(),
+    format: winston.format.combine(
+        winston.format.errors({ stack: true }),    // 添加错误堆栈信息
+        winston.format.json()
+    ),
     //
     // defaultMeta 表示 添加一些元数据，例如服务名称，到日志中
     //
-    defaultMeta: { service: 'clwy-api' },
+    defaultMeta: { service: 'BaiJing-BIZ-API' },
     //
     // transports 表示日志的输出位置。可以添加多个，例如将日志输出到文件、数据库等位置。
     //
@@ -31,14 +35,25 @@ const logger = winston.createLogger({
     ],
 });
 
+// 非生成环境，给输出的日志增加颜色 —— 终端
+if (process.env.NODE_ENV !== 'production') {
+    logger.add(new winston.transports.Console({
+        format: winston.format.combine(
+            winston.format.colorize(),                    // 终端中输出彩色的日志信息
+            winston.format.simple()
+        )
+    }));
+}
+
+
 //
 // 如果不是生产环境，则在终端中用以下格式输出，这样便于调试错误
 // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
 //
-if (process.env.NODE_ENV !== 'production') {
-    logger.add(new winston.transports.Console({
-        format: winston.format.simple(),
-    }));
-}
+// if (process.env.NODE_ENV !== 'production') {
+//     logger.add(new winston.transports.Console({
+//         format: winston.format.simple(),
+//     }));
+// }
 
 module.exports = logger;

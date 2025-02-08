@@ -26,6 +26,7 @@
     "sequelize-cli": "^6.6.2",
     "svg-captcha": "^1.4.0",
     "uuid": "^11.0.5",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "winston-mysql": "^1.1.1"
   }
 }

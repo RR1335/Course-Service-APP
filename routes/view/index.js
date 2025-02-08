@@ -4,12 +4,13 @@ const { Course, Category, User } = require('../../models');
 const { success, failure } = require('../../utils/responses');
 
 const { setKey, getKey } = require('../../utils/redis');
-
+const logger = require('../../utils/Logger')
 /**
  * 首页查询结果
  */
 router.get('/', async function (req, res, next) {
   try {
+      throw new Error('测试 - 错误 - 提示')
     // redia 有数据直接读取
     let data = await getKey('index')
     if (data) {
@@ -68,6 +69,7 @@ router.get('/', async function (req, res, next) {
     success(res, '获取首页数据成功。',data);
 
   } catch (error) {
+    logger.error(error);
     failure(res, error);
   }
 });
