@@ -46,9 +46,11 @@ const likesViewRouter = require('./routes/view/users/like')
 // 公共工具
 
 //文件上传路由
-const UploadFilesRouter = require('./routes/Files/uploads')
+const UploadFilesRouter = require('./routes/Pub/uploads')
 // 清空缓存 flushAll flushdb
-const clearCachesRouter = require('./routes/API/ClearCache')
+const clearCachesRouter = require('./routes/Pub/ClearCache')
+// 图形验证码
+const captchaRouter = require('./routes/Pub/Captcha')
 
 
 const app = express()
@@ -87,6 +89,7 @@ app.use('/likes',userAuth, likesViewRouter)
 // 用户上传图片
 app.use('/UploadFiles',userAuth,UploadFilesRouter)
 app.use('/cache',clearCachesRouter)
+app.use('/captcha',captchaRouter)
 
 
 // API 后端接口
