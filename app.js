@@ -51,6 +51,7 @@ const UploadFilesRouter = require('./routes/Pub/uploads')
 const clearCachesRouter = require('./routes/Pub/ClearCache')
 // 图形验证码
 const captchaRouter = require('./routes/Pub/Captcha')
+// const captchaverify = require('./middleware/captchaverify')
 
 
 const app = express()
@@ -83,7 +84,7 @@ app.use('/courses', coursesViewRouter)
 app.use('/chapters', chaptersViewRouter)
 app.use('/articles', articlesViewRouter)
 app.use('/search', searchViewRouter)
-app.use('/auth', authViewRouter)
+app.use('/auth',authViewRouter)
 app.use('/users',userAuth, usersRouter)
 app.use('/likes',userAuth, likesViewRouter)
 // 用户上传图片

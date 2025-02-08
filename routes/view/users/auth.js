@@ -7,10 +7,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Op } = require("sequelize");
 
+const captchaverify = require('../../../middleware/captchaverify')
+const { delKey} = require('../../../utils/redis')
+
 /**
  * 用户注册
  */
-router.post('/usersignup', async function (req, res) {
+router.post('/usersignup',captchaverify,async function (req, res) {
     try {
         const body = {
             email: req.body.email,
@@ -24,8 +27,11 @@ router.post('/usersignup', async function (req, res) {
         const user = await User.create(body);
         delete user.dataValues.password; // 返回结果中删除 密码
 
+        await  delKey(req.body.captchaKey)
+
         success(res, '创建用户成功。', { user }, 201);
     } catch (error) {
+        console.log(error);
         failure(res, error);
     }
 });

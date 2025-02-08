@@ -55,7 +55,7 @@ function failure(res, error) {
             errors = error.message;
         }
     }
-
+    console.log(error);
     res.status(statusCode).json({
         status: false,
         message: `请求失败: ${error.name}`,
