@@ -51,7 +51,8 @@ const UploadFilesRouter = require('./routes/Pub/uploads')
 const clearCachesRouter = require('./routes/Pub/ClearCache')
 // 图形验证码
 const captchaRouter = require('./routes/Pub/Captcha')
-// const captchaverify = require('./middleware/captchaverify')
+// 增加 Logger 日志路由
+const loggerShowRouter = require('./routes/Pub/logs')
 
 
 const app = express()
@@ -91,6 +92,7 @@ app.use('/likes',userAuth, likesViewRouter)
 app.use('/UploadFiles',userAuth,UploadFilesRouter)
 app.use('/cache',clearCachesRouter)
 app.use('/captcha',captchaRouter)
+app.use('/API/loggers',loggerShowRouter)
 
 
 // API 后端接口
