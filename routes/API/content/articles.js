@@ -10,7 +10,8 @@ const {
         failure
     } = require('../../../utils/responses')
 
-
+// const {getKeysByPattern, delKey} = require("../../../utils/redis");
+const {articlesClearCacheAll} = require('../Middleware/articlesclearCache')
 /**
  * 查询 全部文章
  */
@@ -88,6 +89,7 @@ router.post('/', async function(req,res) {
 
         const article = await Article.create(body)
 
+        await articlesClearCacheAll()
         success(res, "新增文章，成功！", {article}, 201)
 
     }catch (err) {
@@ -105,6 +107,7 @@ router.post('/delete', async function (req, res) {
         // req.body 可以 Array ，即：同时删除多个
         await Article.destroy({ where: { id: id } });
 
+        await articlesClearCacheAll()
         success(res, '已删除到回收站。');
     } catch (error) {
         failure(res, error);
@@ -120,6 +123,8 @@ router.post('/delDone',async function(req,res) {
             where: {id: id},
             force: true
         })
+
+        await articlesClearCacheAll()
         success(res,'已经彻底删除')
     } catch (error) {
         failure(res,err)
@@ -135,6 +140,7 @@ router.post('/restore', async function (req, res) {
 
         await Article.restore({ where: { id: id } });
 
+        await articlesClearCacheAll()
         success(res, '已恢复成功。')
     } catch (error) {
         failure(res, error);
@@ -151,12 +157,15 @@ router.put('/:id', async function(req,res) {
         const body = filerBody(req)
         await article.update(body)
 
+        await  articlesClearCacheAll()
         success(res,"更新文章，成功！",{article})
 
     }catch (err) {
         failure(res, err)
     }
 })
+
+
 
 
 

@@ -147,6 +147,9 @@ router.put('/:id', async function(req,res) {
         const body = ufilterBody(req)
         await user.update(body)
 
+        //清空缓存 redis
+        await clearCache(user);
+
         success(res,"更新用户，成功！",{user})
 
     }catch (err) {
@@ -154,7 +157,14 @@ router.put('/:id', async function(req,res) {
     }
 })
 
-
+/**
+ *
+ * @param user
+ * @returns {Promise<void>}
+ */
+async function clearCache(user) {
+    await delKey(`user:${user.id}`);
+}
 
 
 module.exports = router

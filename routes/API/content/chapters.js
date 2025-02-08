@@ -10,7 +10,7 @@ const {
         failure
     } = require('../../../utils/responses')
 const {  BadRequest } = require('http-errors');
-
+const {chapterClearCache} = require('../Middleware/chapterClearCache')
 /**
  * 查询 全部章节
  */
@@ -91,6 +91,8 @@ router.post('/', async function(req,res) {
         //章节创建成功后，章节数加一
         await Course.increment('chaptersCount',{where:{id:chapter.courseId}})
 
+        // 清空缓存
+        await chapterClearCache(chapter)
         success(res, "新增章节，成功！", {chapter}, 201)
 
     }catch (err) {
@@ -110,6 +112,8 @@ router.delete('/:id', async function(req,res) {
         // 章节统计减一
         await Course.decrement('chaptersCount',{where:{id:chapter.courseId}})
 
+        //清空
+        await chapterClearCache(chapter)
         success(res,"删除章节，成功！")
 
 
@@ -128,6 +132,8 @@ router.put('/:id', async function(req,res) {
         const body = cpfilterBody(req)
         await chapter.update(body)
 
+        //清空
+        await chapterClearCache(chapter)
         success(res,"更新章节，成功！",{chapter})
 
     }catch (err) {

@@ -3,12 +3,19 @@ const router = express.Router();
 const { Course, Category, User } = require('../../models');
 const { success, failure } = require('../../utils/responses');
 
+const { setKey, getKey } = require('../../utils/redis');
+
 /**
  * 首页查询结果
  */
 router.get('/', async function (req, res, next) {
   try {
-
+    // redia 有数据直接读取
+    let data = await getKey('index')
+    if (data) {
+      return success(res,'查询成功',data)
+    }
+      // 查询数据，无redis
       const [
         recommendedCourses,
         likesCourses,
@@ -48,12 +55,17 @@ router.get('/', async function (req, res, next) {
         }),
       ])
 
-
-    success(res, '获取首页数据成功。', {
+    // 组合data的数据
+    data = {
       recommendedCourses,
       likesCourses,
       introductoryCourses
-    });
+    }
+
+    // 设置缓存
+    await setKey('index', data,100)
+
+    success(res, '获取首页数据成功。',data);
 
   } catch (error) {
     failure(res, error);

@@ -6,14 +6,21 @@ const { BadRequest, NotFound } = require('http-errors');
 const bcrypt = require('bcryptjs');
 const {getUser} = require('../../../middleware/getuser')
 
+const { setKey, getKey, delKey } = require('../../../utils/redis');
+
 
 /**
  * 查看用户信息，登录后
  */
 router.get('/userinfo', async function (req, res) {
   try {
-    const user = await getUser(req);
-    console.log(user);
+    let user = await getKey(`user:${req.userId}`);
+    if (!user) {
+      user = await getUser(req);
+      // 写入 redis
+      await setKey(`user:${req.userId}`, user)
+    }
+
     success(res, '查询当前用户信息成功。', { user });
   } catch (error) {
     failure(res, error);
@@ -35,6 +42,8 @@ router.put('/updateuserinfo', async function (req, res) {
 
     const user = await getUser(req);
     await user.update(body);
+    // 清空缓存
+    await clearCache(user);
     success(res, '更新用户信息成功。', { user });
   } catch (error) {
     failure(res, error);
@@ -76,6 +85,8 @@ router.put('/userdata', async function (req, res) {
 
     // 删除密码
     delete user.dataValues.password;
+    // 清空缓存
+    await clearCache(user);
     success(res, '更新账户信息成功。', { user });
   } catch (error) {
     failure(res, error);
@@ -83,6 +94,8 @@ router.put('/userdata', async function (req, res) {
 });
 
 
-
+async function clearCache(user) {
+  await delKey(`user:${user.id}`);
+}
 
 module.exports = router;

@@ -10,7 +10,7 @@ const {
         failure
     } = require('../../../utils/responses')
 const { Conflict } = require('http-errors')
-
+const {categroyClearCache} = require('../Middleware/categroyclearcache')
 
 
 /**
@@ -44,53 +44,6 @@ router.get('/', async function (req, res) {
 
 
 /**
- * 查询 全部分类
- */
-// router.get('/', async function(req,res) {
-// try{
-//     const query = req.query
-//
-//     // 通过前端定义，获取分页数据
-//     const currentPage = Math.abs(Number(query.currentPage)) || 1
-//     const pageSize = Math.abs(Number(query.pageSize)) || 10
-//
-//     const  offset = (currentPage - 1) * pageSize
-//
-//     const condition = {
-//         where:{},
-//         order:[['id','DESC']],
-//         limit: pageSize,
-//         offset:offset
-//     }
-//
-//     if (query.name) {
-//         condition.where.name = {
-//                 [Op.like]:  `%${query.name}%`
-//         }
-//     }
-//
-//     // 通过异步获取数据
-//     const { count,rows} = await Category.findAndCountAll(condition)
-//
-//     res.json({
-//         status: true,
-//         message: "查询成功",
-//         data: {
-//             category: rows,
-//             pagination: {
-//                 total: count,
-//                 currentPage: currentPage,
-//                 pageSize: pageSize
-//             }
-//         }
-//     })
-// }catch (err) {
-//     failure(res,err)
-// }
-//
-// })
-
-/**
  * 查询特定分类
  */
 router.get('/:id', async function(req,res) {
@@ -112,6 +65,8 @@ router.post('/', async function(req,res) {
 
         const category = await Category.create(body)
 
+        // 清空当前缓存
+        await categroyClearCache()
         success(res, "新增分类，成功！", {category}, 201)
 
     }catch (err) {
@@ -135,7 +90,8 @@ router.delete('/:id', async function(req,res) {
 
 
         await category.destroy()
-
+        // 清空当前缓存
+        await categroyClearCache(category);
         success(res,"删除分类，成功！")
 
 
@@ -153,6 +109,8 @@ router.put('/:id', async function(req,res) {
 
         const body = cfilerBody(req)
         await category.update(body)
+        // 清空当前缓存
+        await categroyClearCache(category);
 
         success(res,"更新分类，成功！",{category})
 

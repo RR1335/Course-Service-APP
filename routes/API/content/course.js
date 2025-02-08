@@ -10,6 +10,7 @@ const {
         failure
     } = require('../../../utils/responses')
 const {  Conflict } = require('http-errors');
+const {courseClearCache} = require('../Middleware/courseClearCache')
 
 /**
  * 查询 全部课程
@@ -107,6 +108,8 @@ router.post('/', async function(req,res) {
 
         const course = await Course.create(body)
 
+        // 清空缓存
+        await  courseClearCache()
         success(res, "新增课程，成功！", {course}, 201)
 
     }catch (err) {
@@ -129,6 +132,8 @@ router.delete('/:id', async function(req,res) {
 
         await course.destroy()
 
+        // 清空缓存
+        await  courseClearCache(course)
         success(res,"删除课程，成功！")
 
 
@@ -147,6 +152,8 @@ router.put('/:id', async function(req,res) {
         const body = kfilterBody(req)
         await course.update(body)
 
+        // 清空缓存
+        await  courseClearCache(course)
         success(res,"更新课程，成功！",{course})
 
     }catch (err) {

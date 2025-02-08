@@ -43,8 +43,12 @@ const searchViewRouter = require('./routes/view/search')
 const authViewRouter = require('./routes/view/users/auth')
 const likesViewRouter = require('./routes/view/users/like')
 
+// 公共工具
+
 //文件上传路由
 const UploadFilesRouter = require('./routes/Files/uploads')
+// 清空缓存 flushAll flushdb
+const clearCachesRouter = require('./routes/API/ClearCache')
 
 
 const app = express()
@@ -68,6 +72,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
+
+
 // view 页面接口
 app.use('/', indexRouter)
 app.use('/categories', categoriesViewRouter)
@@ -80,6 +86,7 @@ app.use('/users',userAuth, usersRouter)
 app.use('/likes',userAuth, likesViewRouter)
 // 用户上传图片
 app.use('/UploadFiles',userAuth,UploadFilesRouter)
+app.use('/cache',clearCachesRouter)
 
 
 // API 后端接口
