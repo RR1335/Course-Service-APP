@@ -9,6 +9,7 @@ const { Op } = require("sequelize");
 
 const captchaverify = require('../../../middleware/captchaverify')
 const { delKey} = require('../../../utils/redis')
+const { sendMail } = require('../../../utils/mailser')
 
 /**
  * 用户注册
@@ -28,6 +29,16 @@ router.post('/usersignup',captchaverify,async function (req, res) {
         delete user.dataValues.password; // 返回结果中删除 密码
 
         await  delKey(req.body.captchaKey)
+
+        // 发注册成功的邮件
+        const html = `
+                  您好，<span style="color: Blue">${user.nickname}。</span><br><br>
+                  恭喜，您已成功注册baijing.biz的会员！<br><br>
+                  请访问<a href="https://baijing.biz">白鲸</a>的官网，了解更多。<br><br>
+        ` // 邮件内容结束
+
+        // 发送邮件
+        await sendMail(user.email, '成功注册「baijing.biz」，成为会员', html);
 
         success(res, '创建用户成功。', { user }, 201);
     } catch (error) {

@@ -33,3 +33,10 @@ RR1335
     ALIYUN_BUCKET=
     ALIYUN_REGION=
 
+#邮件服务器配置
+
+    MAILER_HOST=邮件服务器地址
+    MAILER_PORT=邮件服务器端口
+    MAILER_SECURE=465端口填写：true，否则填写：false
+    MAILER_USER=你的邮箱地址
+    MAILER_PASS=你的邮箱授权码或密码
