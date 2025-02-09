@@ -5,15 +5,6 @@ const multer = require('multer');
 
 const loggers = require('./Logger')
 
-/**
- * 自定义 404 错误
- */
-// class NotFound extends Error {
-//     constructor(message) {
-//         super(message)
-//         this.name = 'NotFound'
-//     }
-// }
 
 /**
  * 成功提示信息
@@ -63,8 +54,6 @@ function failure(res, error) {
         loggers.error('服务器错误：', error);
     }
 
-
-    console.log(error);
     res.status(statusCode).json({
         status: false,
         message: `请求失败: ${error.name}`,
