@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
-const logger = require('morgan')
+// const logger = require('morgan')
 // 环境变量的处理 很重要
 require('dotenv').config();
 
@@ -62,7 +62,7 @@ const { mailConsumer } = require('./utils/rabbitmqconn');
 
 const app = express()
 
-app.use(logger('dev'))
+// app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())

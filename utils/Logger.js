@@ -1,10 +1,13 @@
 const { createLogger, format, transports } = require('winston');
 const MySQLTransport = require('winston-mysql');
+const path = require('path')
 
 // 读取 config/config.json 数据库配置文件
 // 根据环境变量 NODE_ENV 来选择对应数据库配置
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+// const config = require(__dirname + '/../config/config.json')[env];
+const config  = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
+
 const options = {
     host: config.host,
     user: config.username,

@@ -1,1 +1,6 @@
+
+
+创建新的数据库
+npx sequelize-cli db:create --charset utf8mb4 --collate utf8mb4_general_ci --env production
+创建新的数据表
 npx sequelize-cli db:migrate --env production
