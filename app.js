@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
-const logger = require('morgan')
+// const logger = require('morgan')
 // 环境变量的处理
 require('dotenv').config();
 
