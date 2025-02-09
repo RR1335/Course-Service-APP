@@ -50,7 +50,7 @@ const UploadFilesRouter = require('./routes/Pub/uploads')
 // 清空缓存 flushAll flushdb
 const clearCachesRouter = require('./routes/Pub/ClearCache')
 // 图形验证码
-const captchaRouter = require('./routes/Pub/Captcha')
+const captchaRouter = require('./routes/Pub/captcha')
 // 增加 Logger 日志路由
 const loggerShowRouter = require('./routes/Pub/logs')
 // 启动邮件消费者
