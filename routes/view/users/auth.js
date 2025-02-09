@@ -11,6 +11,8 @@ const captchaverify = require('../../../middleware/captchaverify')
 const { delKey} = require('../../../utils/redis')
 // const { sendMail } = require('../../../utils/mailser')
 const { mailProducer } = require('../../../utils/rabbitmqconn')
+// const {subject,html} = require("../../../config/constants")
+
 
 
 /**

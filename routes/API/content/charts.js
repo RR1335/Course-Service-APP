@@ -33,7 +33,7 @@ router.get('/sex', async function (req, res) {
 
 
 
-router.get('/user', async (req, res) => {
+router.get('/user', async  (req, res) => {
     try {
         const [results] = await sequelize.query("SELECT DATE_FORMAT(`createdAt`, '%Y-%m') AS `month`, COUNT(*) AS `value` FROM `Users` GROUP BY `month` ORDER BY `month` ASC");
 
