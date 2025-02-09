@@ -26,7 +26,7 @@ const loggers = createLogger({
 });
 
 if (process.env.NODE_ENV !== 'production') {
-    logger.add(new transports.Console({
+    loggers.add(new transports.Console({
         format: format.combine(
             format.colorize(),                    // 终端中输出彩色的日志信息
             format.simple()
