@@ -1,5 +1,5 @@
 const { createClient } = require('redis');
-const loggers = require('./logger')
+const loggers = require('./Logger')
 
 // 创建全局的 Redis 客户端实例
 let client;

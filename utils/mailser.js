@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer')
-const loggers = require('./logger')
+const loggers = require('./Logger')
 // const {error} = require("winston");
 
 /**

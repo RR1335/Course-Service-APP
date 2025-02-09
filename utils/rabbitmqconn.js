@@ -1,6 +1,6 @@
 const amqp = require('amqplib');
 const {sendMail} = require('./mailser');
-const loggers = require('./logger');
+const loggers = require('./Logger');
 
 
 
