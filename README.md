@@ -40,3 +40,9 @@ RR1335
     MAILER_SECURE=465端口填写：true，否则填写：false
     MAILER_USER=你的邮箱地址
     MAILER_PASS=你的邮箱授权码或密码
+
+#消息队列
+
+    消息队列服务器 RabbitMQ
+    RABBITMQ_URL= 消息队列服务器地址
+       - RABBITMQ_URL=amqp://username:password@localhost

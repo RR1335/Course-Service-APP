@@ -53,7 +53,12 @@ const clearCachesRouter = require('./routes/Pub/ClearCache')
 const captchaRouter = require('./routes/Pub/Captcha')
 // 增加 Logger 日志路由
 const loggerShowRouter = require('./routes/Pub/logs')
-
+// 启动邮件消费者
+const { mailConsumer } = require('./utils/rabbitmqconn');
+(async () => {
+    await mailConsumer();
+    // console.log('邮件消费者已启动');
+})();
 
 const app = express()
 

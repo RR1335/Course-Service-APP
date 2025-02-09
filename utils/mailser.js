@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer')
 const logger = require('./logger')
-const {error} = require("winston");
+// const {error} = require("winston");
 
 /**
  * 配置邮件服务器信息

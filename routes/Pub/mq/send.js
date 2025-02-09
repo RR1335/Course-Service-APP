@@ -10,8 +10,8 @@ const amqplib = require('amqplib');
         // 队列的名字是：hello
         const queue = 'hello';
 
-        // 要发送的消息内容是：你好，白鲸 baijing.biz !
-        const msg = '你好 baijing.biz 白鲸!';
+        // 要发送的消息内容是：你好，baijing.biz!
+        const msg = '你好，白鲸 baijing.biz!';
 
         // 创建一个队列。如果队列不存在，则创建一个队列。如果队列已经存在，则不会创建新的队列
         // durable: 表示队列是否持久化。如果设置为true，即重启后队列不会消失
@@ -35,5 +35,3 @@ const amqplib = require('amqplib');
         console.log(error);
     }
 })();
-
-
