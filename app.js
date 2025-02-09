@@ -2,7 +2,7 @@ const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 // const logger = require('morgan')
-// 环境变量的处理
+// 环境变量的处理 很重要
 require('dotenv').config();
 
 // 引入跨域的 CORS
