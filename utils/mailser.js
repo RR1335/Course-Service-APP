@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer')
-const logger = require('./logger')
+const loggers = require('./logger')
 // const {error} = require("winston");
 
 /**
@@ -30,7 +30,7 @@ const sendMail = async (email, subject, html) => {
            html,
        })
    }catch(err) {
-       logger.error('邮件发送失败',err);
+       loggers.error('邮件发送失败',err);
    }
 
 }

@@ -3,7 +3,7 @@ const createError = require('http-errors');
 const multer = require('multer');
 // const {logger} = require("sequelize/lib/utils/logger");
 
-const logger = require('./Logger')
+const loggers = require('./Logger')
 
 /**
  * 自定义 404 错误
@@ -60,7 +60,7 @@ function failure(res, error) {
     }else {
         statusCode = 500;
         errors = '服务器错误';
-        logger.error('服务器错误：', error);
+        loggers.error('服务器错误：', error);
     }
 
 

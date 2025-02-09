@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { Attachment, User } = require('../../../models');
-const { NotFound } = require('http-errors');
 const { success, failure } = require('../../../utils/responses');
 const { client } = require('../../../utils/aliyunoss')
 const {getAttachment} = require('../Middleware/getattachments')

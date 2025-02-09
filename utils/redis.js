@@ -1,5 +1,5 @@
 const { createClient } = require('redis');
-const logger = require('./logger')
+const loggers = require('./logger')
 
 // 创建全局的 Redis 客户端实例
 let client;
@@ -13,7 +13,7 @@ const redisClient = async () => {
 
     client = await createClient()
         // .on('error', err => console.log('Redis 连接失败', err))
-        .on('error', err => logger.error('Redis 连接失败：', err))
+        .on('error', err => loggers.error('Redis 连接失败：', err))
         .connect();
 };
 

@@ -13,7 +13,7 @@ const options = {
     table: 'Logs'
 };
 
-const logger = createLogger({
+const loggers = createLogger({
     level: 'info',
     format: format.combine(
         format.errors({ stack: true }),    // 添加错误堆栈信息
@@ -34,4 +34,4 @@ if (process.env.NODE_ENV !== 'production') {
     }));
 }
 
-module.exports = logger;
+module.exports = loggers;

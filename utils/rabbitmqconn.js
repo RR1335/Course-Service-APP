@@ -1,6 +1,6 @@
 const amqp = require('amqplib');
 const {sendMail} = require('./mailser');
-const logger = require('./logger');
+const loggers = require('./logger');
 
 
 
@@ -20,7 +20,7 @@ const connectToRabbitMQ = async () => {
         channel = await connection.createChannel();
         await channel.assertQueue('mail_queue', { durable: true });
     } catch (error) {
-        logger.error('RabbitMQ 连接失败：', error);
+        loggers.error('RabbitMQ 连接失败：', error);
     }
 };
 
@@ -36,7 +36,7 @@ const mailProducer = async (msg) => {
 
         channel.sendToQueue('mail_queue', Buffer.from(JSON.stringify(msg)), { persistent: true });
     } catch (error) {
-        logger.error('邮件队列生产者错误：', error);
+        loggers.error('邮件队列生产者错误：', error);
     }
 };
 
@@ -57,7 +57,7 @@ const mailConsumer = async () => {
             }
         );
     } catch (error) {
-        logger.error('邮件队列消费者错误：', error);
+        loggers.error('邮件队列消费者错误：', error);
     }
 };
 
