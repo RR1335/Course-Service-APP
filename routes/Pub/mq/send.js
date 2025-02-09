@@ -1,41 +1,39 @@
-var amqp = require('amqplib/callback_api');
+const amqplib = require('amqplib');
 
-// 连接到 RabbitMQ
-amqp.connect('amqp://localhost', function (error0, connection) {
-    if (error0) {
-        throw error0;
-    }
+(async () => {
+    try {
+        const connection = await amqplib.connect('amqp://localhost');
 
-    // 创建一个通道。通道是进行通信的基本单位，通过通道可以发送和接收消息
-    connection.createChannel(function (error1, channel) {
-        if (error1) {
-            throw error1;
-        }
+        // 创建一个通道。通道是进行通信的基本单位，通过通道可以发送和接收消息
+        const channel = await connection.createChannel();
 
         // 队列的名字是：hello
-        var queue = 'hello';
+        const queue = 'hello';
 
-        // 要发送的消息内容是：你好，baijing.biz!
-        var msg = '你好，baijing.biz!';
+        // 要发送的消息内容是：你好，白鲸 baijing.biz !
+        const msg = '你好 baijing.biz 白鲸!';
 
         // 创建一个队列。如果队列不存在，则创建一个队列。如果队列已经存在，则不会创建新的队列
-        // durable: 表示队列是否持久化_写入存储设备。如果设置为true，即重启后队列不会消失
-        channel.assertQueue(queue, {
-            durable: false
-        });
+        // durable: 表示队列是否持久化。如果设置为true，即重启后队列不会消失
+        await channel.assertQueue(queue, { durable: true });
 
         // 发送消息到队列
         // queue: 要发送消息的队列的名字
         // content: 要发送的消息内容
-        channel.sendToQueue(queue, Buffer.from(msg));
+        // persistent: true，消息持久化，确保消息在 RabbitMQ 重启后仍然存在。
+        channel.sendToQueue(queue, Buffer.from(msg), { persistent: true });
 
         // 打印发送提示信息
         console.log('[x] 发送了：%s', msg);
-    });
 
-    // 500ms 后关闭连接
-    setTimeout(function () {
-        connection.close();
-        process.exit(0);
-    }, 500);
-});
+        // 500ms 后关闭连接
+        setTimeout(() => {
+            connection.close();
+            process.exit(0);
+        }, 500);
+    } catch (error) {
+        console.log(error);
+    }
+})();
+
+
