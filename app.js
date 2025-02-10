@@ -31,6 +31,8 @@ const  ChartsRouter = require('./routes/API/content/charts')
 const  AdminAuthRouter = require('./routes/API/users/auth')
 //附件查询 删除
 const getAttachmentRouter = require('./routes/API/content/attachments')
+// 会员
+const memberShipRouter = require('./routes/API/users/memberships')
 
 // view 前端页面引入
 const indexRouter = require('./routes/view')
@@ -108,6 +110,7 @@ app.use('/API/course',LoginAuth, CoursesRouter)
 app.use('/API/chapter',LoginAuth, ChapterRouter)
 app.use('/API/charts',LoginAuth, ChartsRouter)
 app.use('/API/getAttachment',LoginAuth,getAttachmentRouter)
+app.use('/API/member',LoginAuth,memberShipRouter)
 // 登录路由 不能增加登录验证LoginAuth ，否则变成未登录前要验证登录了
 app.use('/API/auth', AdminAuthRouter)
 
