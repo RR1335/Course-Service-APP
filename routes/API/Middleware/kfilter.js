@@ -14,7 +14,8 @@ function kfilterBody(req) {
         image: req.body.image,
         recommended: req.body.recommended,
         introductory: req.body.introductory,
-        content: req.body.content
+        content: req.body.content,
+        free: req.body.free
     };
 }
 

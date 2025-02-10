@@ -45,6 +45,12 @@ module.exports = (sequelize, DataTypes) => {
         isUrl: { msg: '视频地址不正确。' }
       }
     },
+    free: {
+      type: DataTypes.BOOLEAN,
+      validate: {
+        isIn: { args: [[true, false]], msg: '是否免费章节的值必须是，推荐：true 不推荐：false。' }
+      }
+    },
     rank: {
       type: DataTypes.INTEGER,
       allowNull: false,

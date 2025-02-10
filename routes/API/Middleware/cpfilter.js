@@ -6,7 +6,8 @@ function cpfilterBody(req) {
         title: req.body.title,
         content: req.body.content,
         video: req.body.video,
-        rank: req.body.rank
+        rank: req.body.rank,
+        free: req.body.free,
     };
 }
 module.exports = {

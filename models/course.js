@@ -89,6 +89,14 @@ module.exports = (sequelize, DataTypes) => {
         return moment(this.getDataValue("createdAt")).format("LL");
       }
     },
+
+    free: {
+      type: DataTypes.BOOLEAN,
+      validate: {
+        isIn: { args: [[true, false]], msg: '是否免费课程的值必须是，推荐：true 不推荐：false。' }
+      }
+    },
+
     updatedAt: {
       type: DataTypes.DATE,
       get() {
