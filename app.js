@@ -44,6 +44,7 @@ const articlesViewRouter = require('./routes/view/content/articles')
 const searchViewRouter = require('./routes/view/search')
 const authViewRouter = require('./routes/view/users/auth')
 const likesViewRouter = require('./routes/view/users/like')
+const membershipsViewRouter = require('./routes/view/users/memberships')
 
 // 公共工具
 
@@ -89,12 +90,14 @@ app.use(cors(corsOptions));
 app.use('/', indexRouter)
 app.use('/categories', categoriesViewRouter)
 app.use('/courses', coursesViewRouter)
-app.use('/chapters', chaptersViewRouter)
+app.use('/chapters',userAuth, chaptersViewRouter)        // 增加会员后，增加章节验证
 app.use('/articles', articlesViewRouter)
 app.use('/search', searchViewRouter)
 app.use('/auth',authViewRouter)
 app.use('/users',userAuth, usersRouter)
 app.use('/likes',userAuth, likesViewRouter)
+app.use('/member',membershipsViewRouter)
+
 // 用户上传图片
 app.use('/UploadFiles',userAuth,UploadFilesRouter)
 app.use('/cache',clearCachesRouter)
