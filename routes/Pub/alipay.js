@@ -35,8 +35,8 @@ router.post('/pay/:platform', userAuth, async function (req, res, next) {
         // 支付页面接口，返回 HTML 代码片段
         const url = alipaySdk.pageExecute(method, 'GET', {
             bizContent,
-            returnUrl: 'process.env.ALIPAY_RETURN_URL',   // 当支付完成后，支付宝跳转地址
-            notify_url: 'https://lc.baijing.biz/alipay/notify',    // 异步通知接口地址
+            returnUrl: process.env.ALIPAY_RETURN_URL,   // 当支付完成后，支付宝跳转地址
+            notify_url: process.env.ALIPAY_NOTIFY_URL,    // 异步通知接口地址
         });
 
         success(res, '支付地址生成成功。', { url });
@@ -52,9 +52,16 @@ router.post('/pay/:platform', userAuth, async function (req, res, next) {
 router.post('/notify', async function (req, res) {
     try {
         const alipayData = req.body;
-        logger.info('支付宝异步通知信息：', alipayData);
+        const verify = alipaySdk.checkNotifySign(alipayData);
 
-        res.send('fail');
+        // 如果验签成功，更新订单与会员信息
+        if (verify) {
+            await paidSuccess(alipayData);
+            res.send('success');
+        } else {
+            logger.warn('支付宝验签失败：', alipayData);
+            res.send('fail');
+        }
     } catch (error) {
         failure(res, error)
     }
