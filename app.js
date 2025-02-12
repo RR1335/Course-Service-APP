@@ -45,8 +45,12 @@ const searchViewRouter = require('./routes/view/search')
 const authViewRouter = require('./routes/view/users/auth')
 const likesViewRouter = require('./routes/view/users/like')
 const membershipsViewRouter = require('./routes/view/users/memberships')
+const ordersViewRouter = require('./routes/view/users/orders')
 
-// 公共工具
+// 公共接口
+
+//支付宝支付
+const AlipayRouter = require('./routes/Pub/alipay')
 
 //文件上传路由
 const UploadFilesRouter = require('./routes/Pub/uploads')
@@ -97,12 +101,14 @@ app.use('/auth',authViewRouter)
 app.use('/users',userAuth, usersRouter)
 app.use('/likes',userAuth, likesViewRouter)
 app.use('/member',membershipsViewRouter)
+app.use('/orders',userAuth,ordersViewRouter)
 
-// 用户上传图片
+// 公共部分路由
 app.use('/UploadFiles',userAuth,UploadFilesRouter)
 app.use('/cache',clearCachesRouter)
 app.use('/captcha',captchaRouter)
 app.use('/API/loggers',loggerShowRouter)
+app.use('/alipay',AlipayRouter)
 
 
 // API 后端接口
