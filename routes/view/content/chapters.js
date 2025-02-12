@@ -77,10 +77,10 @@ async function checkUserRole(req, chapter) {
     }
 
     // 检查用户是否有权限访收费章节
-    const allowedRoles = [1, 100]; // 大会员和管理员的角色ID
+    const allowedRoles = [1, 100]; // 白鲸会员和管理员的角色ID
     const user = await User.findByPk(req.userId);
     if (!allowedRoles.includes(user.role)) {
-        throw new Forbidden('您没有权限浏览，请先购买大会员后再访问。');
+        throw new Forbidden('您没有权限浏览，请先购买白鲸会员后再访问。');
     }
 }
 

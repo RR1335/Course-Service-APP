@@ -88,9 +88,9 @@ router.get('/finish', async function (req, res) {
             await paidSuccess(out_trade_no, trade_no, timestamp);
 
             // res.send('感谢您购买白鲸会员服务，您的支付已成功！');
-            res.redirect('https://baijing.biz');
+            // res.redirect('https://baijing.biz');
             // 能给跳转到具体的支付成功详情页面
-            // res.redirect(`https://api.baijing.biz(网站的URL)/orders/${alipayData.out_trade_no}`);
+            res.redirect(`https://api.baijing.biz(网站的URL)/orders/${alipayData.out_trade_no}`);
         } else {
             throw new BadRequest('支付验签失败。');
         }
@@ -145,7 +145,7 @@ async function paidSuccess(outTradeNo, tradeNo, paidAt) {
     // 查询当前订单
     const order = await Order.findOne({ where: { outTradeNo: outTradeNo } });
 
-    // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加大会员有效期
+    // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加白鲸会员有效期
     if (order.status > 0) {
         return;
     }
@@ -161,12 +161,12 @@ async function paidSuccess(outTradeNo, tradeNo, paidAt) {
     // 查询订单对应的用户
     const user = await User.findByPk(order.userId);
 
-    // 将用户组设置为大会员。可防止管理员创建订单，并将用户组修改为大会员
+    // 将用户组设置为白鲸会员。可防止管理员创建订单，并将用户组修改为白鲸会员
     if (user.role === 0) {
         user.role = 1;
     }
 
-    // 使用moment.js，增加大会员有效期
+    // 使用moment.js，增加白鲸会员有效期
     user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date())
         .add(order.membershipMonths, 'months')
         .toDate();
@@ -186,7 +186,7 @@ async function paidSuccess(outTradeNo, tradeNo, paidAt) {
 //     // 查询当前订单。
 //     const order = await Order.findOne({ where: { outTradeNo: out_trade_no } });
 //
-//     // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加大会员有效期。
+//     // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加白鲸会员有效期。
 //     if (order.status > 0) {
 //         return;
 //     }
@@ -202,12 +202,12 @@ async function paidSuccess(outTradeNo, tradeNo, paidAt) {
 //     // 查询订单对应的用户
 //     const user = await User.findByPk(order.userId);
 //
-//     // 将用户组设置为大会员。可防止管理员创建订单，并将用户组修改为大会员。
+//     // 将用户组设置为白鲸会员。可防止管理员创建订单，并将用户组修改为白鲸会员。
 //     if (user.role === 0) {
 //         user.role = 1;
 //     }
 //
-//     // 使用moment.js，增加大会员有效期
+//     // 使用moment.js，增加白鲸会员有效期
 //     user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date()).add(order.membershipMonths, 'months').toDate();
 //
 //     // 保存用户信息

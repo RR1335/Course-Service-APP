@@ -136,14 +136,14 @@ async function getOrder(req) {
 }
 
 /**
- * 查询大会员信息
+ * 查询白鲸会员信息
  * @param req
  * @returns {Promise<*>}
  */
 async function getMembership(req) {
     const { membershipId } = req.body;
     if (!membershipId) {
-        throw new BadRequest('请选择要购买的大会员。');
+        throw new BadRequest('请选择要购买的白鲸会员。');
     }
 
     let membership = await getKey(`membership:${membershipId}`);
@@ -151,7 +151,7 @@ async function getMembership(req) {
         membership = await Membership.findByPk(membershipId);
 
         if (!membership) {
-            throw new NotFound('未找到大会员信息，请联系管理员。');
+            throw new NotFound('未找到白鲸会员信息，请联系管理员。');
         }
         await setKey(`membership:${membershipId}`, membership);
     }

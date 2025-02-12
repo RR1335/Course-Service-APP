@@ -7,7 +7,7 @@ const { success, failure } = require('../../../utils/responses');
 const { delKey } = require('../../../utils/redis');
 
 /**
- * 查询大会员列表
+ * 查询白鲸会员列表
  * GET /admin/memberships
  */
 router.get('/', async function (req, res) {
@@ -26,7 +26,7 @@ router.get('/', async function (req, res) {
         }
 
         const memberships = await Membership.findAll(condition);
-        success(res, '查询大会员列表成功。', {
+        success(res, '查询白鲸会员列表成功。', {
             memberships: memberships,
         });
     } catch (error) {
@@ -36,20 +36,20 @@ router.get('/', async function (req, res) {
 
 
 /**
- * 查询大会员详情
+ * 查询白鲸会员详情
  * GET /admin/memberships/:id
  */
 router.get('/:id', async function (req, res) {
     try {
         const membership = await getMembership(req);
-        success(res, '查询大会员成功。', { membership });
+        success(res, '查询白鲸会员成功。', { membership });
     } catch (error) {
         failure(res, error);
     }
 });
 
 /**
- * 创建大会员
+ * 创建白鲸会员
  * POST /admin/memberships
  */
 router.post('/', async function (req, res) {
@@ -59,14 +59,14 @@ router.post('/', async function (req, res) {
         const membership = await Membership.create(body);
         await clearCache();
 
-        success(res, '创建大会员成功。', { membership }, 201);
+        success(res, '创建白鲸会员成功。', { membership }, 201);
     } catch (error) {
         failure(res, error);
     }
 });
 
 /**
- * 更新大会员
+ * 更新白鲸会员
  * PUT /admin/memberships/:id
  */
 router.put('/:id', async function (req, res) {
@@ -77,14 +77,14 @@ router.put('/:id', async function (req, res) {
         await membership.update(body);
         await clearCache(membership);
 
-        success(res, '更新大会员成功。', { membership: membership });
+        success(res, '更新白鲸会员成功。', { membership: membership });
     } catch (error) {
         failure(res, error);
     }
 });
 
 /**
- * 删除大会员
+ * 删除白鲸会员
  * DELETE /admin/memberships/:id
  */
 router.delete('/:id', async function (req, res) {
@@ -93,21 +93,21 @@ router.delete('/:id', async function (req, res) {
         await membership.destroy();
         await clearCache(membership);
 
-        success(res, '删除大会员成功。');
+        success(res, '删除白鲸会员成功。');
     } catch (error) {
         failure(res, error);
     }
 });
 
 /**
- * 公共方法：查询当前大会员
+ * 公共方法：查询当前白鲸会员
  */
 async function getMembership(req) {
     const { id } = req.params;
 
     const membership = await Membership.findByPk(id);
     if (!membership) {
-        throw new NotFound(`ID: ${id}的大会员未找到。`)
+        throw new NotFound(`ID: ${id}的白鲸会员未找到。`)
     }
 
     return membership;
