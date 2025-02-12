@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     membershipMonths: DataTypes.INTEGER,
+    version: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
     createdAt: {
       type: DataTypes.DATE,
       get() {

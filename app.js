@@ -8,12 +8,7 @@ require('dotenv').config();
 // 引入跨域的 CORS
 const cors = require('cors')
 
-// 增加验证接口
-const LoginAuth = require('./middleware/login-auth')
-const userAuth = require('./middleware/user-auth')
 // API 后端接口引入
-
-
 
 // 加载 articles 路由文件
 const ArticlesRouter = require('./routes/API/content/articles')
@@ -49,6 +44,10 @@ const ordersViewRouter = require('./routes/view/users/orders')
 
 // 公共接口
 
+// 增加验证接口
+const LoginAuth = require('./middleware/login-auth')
+const userAuth = require('./middleware/user-auth')
+
 //支付宝支付
 const AlipayRouter = require('./routes/Pub/alipay')
 
@@ -58,6 +57,10 @@ const UploadFilesRouter = require('./routes/Pub/uploads')
 const clearCachesRouter = require('./routes/Pub/ClearCache')
 // 图形验证码
 const captchaRouter = require('./routes/Pub/captcha')
+//引入定时任务
+// const schedule = require('node-schedule');
+//引入定时任务
+const initScheduleTasks = require('./middleware/task/indextask');
 // 增加 Logger 日志路由
 const loggerShowRouter = require('./routes/Pub/logs')
 // 启动邮件消费者
@@ -66,6 +69,14 @@ const { mailConsumer } = require('./utils/rabbitmqconn');
     await mailConsumer();
     // console.log('邮件消费者已启动');
 })();
+
+
+// 定时任务执行
+// const job = schedule.scheduleJob('* * * * * *', function(){
+//     console.log('baijing.biz 白鲸，最好！');
+// });
+initScheduleTasks();
+
 
 const app = express()
 
