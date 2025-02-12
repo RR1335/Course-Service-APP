@@ -56,7 +56,10 @@ router.post('/notify', async function (req, res) {
 
         // 如果验签成功，更新订单与会员信息
         if (verify) {
-            await paidSuccess(alipayData);
+            // 接收返回参数
+            const { out_trade_no, trade_no, gmt_payment } = alipayData;
+            await paidSuccess(out_trade_no, trade_no, gmt_payment);
+
             res.send('success');
         } else {
             logger.warn('支付宝验签失败：', alipayData);
@@ -80,7 +83,10 @@ router.get('/finish', async function (req, res) {
         // const verify = alipaySdk.checkNotifySign(alipayData);
         // 验签成功，更新订单与会员信息
         if (verify) {
-            await paidSuccess(alipayData);
+            // 支付宝不同的环境返回的参数命名规则不一致，要注意接收不同位置的参数
+            const { out_trade_no, trade_no, timestamp } = alipayData;
+            await paidSuccess(out_trade_no, trade_no, timestamp);
+
             // res.send('感谢您购买白鲸会员服务，您的支付已成功！');
             res.redirect('https://baijing.biz');
             // 能给跳转到具体的支付成功详情页面
@@ -96,43 +102,117 @@ router.get('/finish', async function (req, res) {
 
 
 /**
+ * 主动查询支付宝订单状态
+ * POST /alipay/query
+ */
+router.post('/query', userAuth, async function (req, res) {
+    try {
+        // 查询订单
+        const order = await getOrder(req);
+
+        const result = await alipaySdk.exec('alipay.trade.query', {
+            bizContent: {
+                out_trade_no: order.outTradeNo,
+            },
+        });
+
+        // 获取支付结果相关信息
+        const {tradeStatus, outTradeNo, tradeNo, sendPayDate} = result;
+
+        // TRADE_SUCCESS 说明支付成功
+        if (tradeStatus === 'TRADE_SUCCESS') {
+            // 更新订单状态
+            await paidSuccess(outTradeNo, tradeNo, sendPayDate);
+        }
+
+        success(res, '执行成功，请重新查询订单。');
+    } catch (error) {
+        failure(res, error);
+    }
+});
+
+
+
+
+/**
  * 支付成功后，更新订单状态和会员信息
- * @param alipayData
+ * @param outTradeNo
+ * @param tradeNo
+ * @param paidAt
  * @returns {Promise<void>}
  */
-async function paidSuccess(alipayData) {
-    const { out_trade_no, trade_no, timestamp } = alipayData;
+async function paidSuccess(outTradeNo, tradeNo, paidAt) {
+    // 查询当前订单
+    const order = await Order.findOne({ where: { outTradeNo: outTradeNo } });
 
-    // 查询当前订单。
-    const order = await Order.findOne({ where: { outTradeNo: out_trade_no } });
-
-    // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加大会员有效期。
+    // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加大会员有效期
     if (order.status > 0) {
         return;
     }
 
     // 更新订单状态
     await order.update({
-        tradeNo: trade_no,    // 流水号
+        tradeNo: tradeNo,     // 流水号
         status: 1,            // 订单状态：已支付
         paymentMethod: 0,     // 支付方式：支付宝
-        paidAt: timestamp,    // 支付时间
+        paidAt: paidAt,       // 支付时间
     })
 
     // 查询订单对应的用户
     const user = await User.findByPk(order.userId);
 
-    // 将用户组设置为大会员。可防止管理员创建订单，并将用户组修改为大会员。
+    // 将用户组设置为大会员。可防止管理员创建订单，并将用户组修改为大会员
     if (user.role === 0) {
         user.role = 1;
     }
 
     // 使用moment.js，增加大会员有效期
-    user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date()).add(order.membershipMonths, 'months').toDate();
+    user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date())
+        .add(order.membershipMonths, 'months')
+        .toDate();
 
     // 保存用户信息
     await user.save();
 }
+
+
+
+
+
+
+// async function paidSuccess(alipayData) {
+//     const { out_trade_no, trade_no, timestamp } = alipayData;
+//
+//     // 查询当前订单。
+//     const order = await Order.findOne({ where: { outTradeNo: out_trade_no } });
+//
+//     // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加大会员有效期。
+//     if (order.status > 0) {
+//         return;
+//     }
+//
+//     // 更新订单状态
+//     await order.update({
+//         tradeNo: trade_no,    // 流水号
+//         status: 1,            // 订单状态：已支付
+//         paymentMethod: 0,     // 支付方式：支付宝
+//         paidAt: timestamp,    // 支付时间
+//     })
+//
+//     // 查询订单对应的用户
+//     const user = await User.findByPk(order.userId);
+//
+//     // 将用户组设置为大会员。可防止管理员创建订单，并将用户组修改为大会员。
+//     if (user.role === 0) {
+//         user.role = 1;
+//     }
+//
+//     // 使用moment.js，增加大会员有效期
+//     user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date()).add(order.membershipMonths, 'months').toDate();
+//
+//     // 保存用户信息
+//     await user.save();
+// }
 
 
 
@@ -161,7 +241,7 @@ async function getOrder(req) {
     }
 
     if (order.status > 0) {
-        throw new BadRequest('订单已经支付或失效，无法付款。')
+        throw new BadRequest('订单已经支付或取消。')
     }
 
     return order;
