@@ -87,7 +87,7 @@ router.get('/finish', async function (req, res) {
          // res.send('感谢您购买白鲸会员服务，您的支付已成功！');
          // res.redirect('https://baijing.biz');
          // 能给跳转到具体的支付成功详情页面
-         res.redirect(`https://api.baijing.biz(网站的URL)/orders/${alipayData.out_trade_no}`);
+         res.redirect(`https://lc.baijing.biz/orders/${alipayData.out_trade_no}`);
       } else {
          throw new BadRequest('支付验签失败。');
       }
