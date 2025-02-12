@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { User, Order } = require('../../models');
+const {sequelize, User, Order } = require('../../models');
 const { success, failure } = require('../../utils/responses');
 const { NotFound, BadRequest } = require('http-errors');
 const alipaySdk = require('../../utils/alipay');
@@ -141,39 +141,151 @@ router.post('/query', userAuth, async function (req, res) {
  * @param paidAt
  * @returns {Promise<void>}
  */
+
+
+// 事务托管的方式
 async function paidSuccess(outTradeNo, tradeNo, paidAt) {
-    // 查询当前订单
-    const order = await Order.findOne({ where: { outTradeNo: outTradeNo } });
+    try {
+        // 开启事务
+        // sequelize 包住所有的执行语句
+        await sequelize.transaction(async (t) => {
+            // 查询当前订单（在事务中）
+            const order = await Order.findOne({
+                where: { outTradeNo: outTradeNo },
+                transaction: t,
+            });
 
-    // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加白鲸会员有效期
-    if (order.status > 0) {
-        return;
+            // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加白鲸会员有效期
+            if (order.status > 0) {
+                return;
+            }
+
+            // 更新订单状态（在事务中）
+            await order.update({
+                tradeNo: tradeNo,     // 流水号
+                status: 1,            // 订单状态：已支付
+                paymentMethod: 0,     // 支付方式：支付宝
+                paidAt: paidAt,       // 支付时间
+            }, { transaction: t });
+
+            // 查询订单对应的用户（在事务中）
+            const user = await User.findByPk(order.userId, { transaction: t });
+
+            // 将用户组设置为白鲸会员。可防止管理员创建订单，并将用户组修改为白鲸会员
+            if (user.role === 0) {
+                user.role = 1;
+            }
+
+            // 使用moment.js，增加白鲸会员有效期
+            user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date())
+              .add(order.membershipMonths, 'months')
+              .toDate();
+            // 演示错误的部分，用于测试事务是否成功
+            // user.membershipExpiredAt = '2025年10月10日';
+
+            // 保存用户信息（在事务中）
+            await user.save({ transaction: t });
+        });
+    } catch (error) {
+        // 将错误抛出，让上层处理
+        throw error;
     }
-
-    // 更新订单状态
-    await order.update({
-        tradeNo: tradeNo,     // 流水号
-        status: 1,            // 订单状态：已支付
-        paymentMethod: 0,     // 支付方式：支付宝
-        paidAt: paidAt,       // 支付时间
-    })
-
-    // 查询订单对应的用户
-    const user = await User.findByPk(order.userId);
-
-    // 将用户组设置为白鲸会员。可防止管理员创建订单，并将用户组修改为白鲸会员
-    if (user.role === 0) {
-        user.role = 1;
-    }
-
-    // 使用moment.js，增加白鲸会员有效期
-    user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date())
-        .add(order.membershipMonths, 'months')
-        .toDate();
-
-    // 保存用户信息
-    await user.save();
 }
+
+
+
+
+// 非托管事务的写法
+// async function paidSuccess(outTradeNo, tradeNo, paidAt) {
+//     // 开启事务
+//     const t = await Order.sequelize.transaction();
+//
+//     try {
+//         // 查询当前订单（在事务中）
+//         const order = await Order.findOne({
+//             where: { outTradeNo: outTradeNo },
+//             transaction: t,
+//         });
+//
+//         // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加白鲸会员有效期
+//         if (order.status > 0) {
+//             return;
+//         }
+//
+//         // 更新订单状态（在事务中）
+//         await order.update({
+//             tradeNo: tradeNo,     // 流水号
+//             status: 1,            // 订单状态：已支付
+//             paymentMethod: 0,     // 支付方式：支付宝
+//             paidAt: paidAt,       // 支付时间
+//         }, { transaction: t });
+//
+//         // 查询订单对应的用户（在事务中）
+//         const user = await User.findByPk(order.userId, { transaction: t });
+//
+//         // 将用户组设置为白鲸会员。可防止管理员创建订单，并将用户组修改为白鲸会员
+//         if (user.role === 0) {
+//             user.role = 1;
+//         }
+//
+//         // 使用moment.js，增加白鲸会员有效期
+//         user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date())
+//           .add(order.membershipMonths, 'months')
+//           .toDate();
+//         // 错误测试
+//         // user.membershipExpiredAt = '2025年10月10日';
+//
+//         // 保存用户信息（在事务中）
+//         await user.save({ transaction: t });
+//
+//         // 提交事务
+//         await t.commit();
+//     } catch (error) {
+//         // 回滚事务
+//         await t.rollback();
+//
+//         // 将错误抛出，让上层处理
+//         throw error;
+//     }
+// }
+
+
+
+
+
+// async function paidSuccess(outTradeNo, tradeNo, paidAt) {
+//     // 查询当前订单
+//     const order = await Order.findOne({ where: { outTradeNo: outTradeNo } });
+//
+//     // 对于状态已更新的订单，直接返回。防止用户重复请求，重复增加白鲸会员有效期
+//     if (order.status > 0) {
+//         return;
+//     }
+//
+//     // 更新订单状态
+//     await order.update({
+//         tradeNo: tradeNo,     // 流水号
+//         status: 1,            // 订单状态：已支付
+//         paymentMethod: 0,     // 支付方式：支付宝
+//         paidAt: paidAt,       // 支付时间
+//     })
+//
+//     // 查询订单对应的用户
+//     const user = await User.findByPk(order.userId);
+//
+//     // 将用户组设置为白鲸会员。可防止管理员创建订单，并将用户组修改为白鲸会员
+//     if (user.role === 0) {
+//         user.role = 1;
+//     }
+//
+//     // 使用moment.js，增加白鲸会员有效期
+//     user.membershipExpiredAt = moment(user.membershipExpiredAt || new Date())
+//         .add(order.membershipMonths, 'months')
+//         .toDate();
+//
+//     // 保存用户信息
+//     await user.save();
+// }
 
 
 
