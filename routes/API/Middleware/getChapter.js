@@ -1,43 +1,39 @@
-const  express = require('express');
-const { Chapter,Course } = require("../../../models")
-const {NotFound} = require('http-errors')
-
+const express = require('express');
+const { Chapter, Course } = require('../../../models');
+const { NotFound } = require('http-errors');
 
 function getCondition() {
-    return {
-        attributes: { exclude: ['CourseId'] },
-        include: [
-            {
-                model: Course,
-                as: 'course',
-                attributes: ['id', 'name']
-            }
-        ]
-    }
+   return {
+      attributes: { exclude: ['CourseId'] },
+      include: [
+         {
+            model: Course,
+            as: 'course',
+            attributes: ['id', 'name'],
+         },
+      ],
+   };
 }
-
-
-
 
 /**
  * 公共方法：查询数据
  */
 async function getChapters(req) {
-    //获取文章ID
-    const {id} = req.params
-    const condition = getCondition()
+   //获取文章ID
+   const { id } = req.params;
+   const condition = getCondition();
 
-    const chapter = await Chapter.findByPk(id,condition)
+   const chapter = await Chapter.findByPk(id, condition);
 
-    //没有找到文章， throw 异常
-    if (!chapter) {
-        throw new NotFound(`ID: ${id} 的文章未找到！！`)
-    }
+   //没有找到文章， throw 异常
+   if (!chapter) {
+      throw new NotFound(`ID: ${id} 的文章未找到！！`);
+   }
 
-    return chapter
+   return chapter;
 }
 
 module.exports = {
-    getChapters,
-    getCondition
-}
+   getChapters,
+   getCondition,
+};

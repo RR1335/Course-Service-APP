@@ -1,12 +1,12 @@
-const  express = require("express")
+const express = require('express');
 
 function filerBody(req) {
-    return {
-        title: req.body.title,
-        content: req.body.content
-    }
+   return {
+      title: req.body.title,
+      content: req.body.content,
+   };
 }
 
 module.exports = {
-    filerBody
-}
+   filerBody,
+};

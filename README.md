@@ -1,4 +1,4 @@
-RR1335 
+RR1335
 
 这是一套课程展示，购买的后台API和对接View的API。
 
@@ -10,16 +10,15 @@ RR1335
 
     3.API类型 —— JSON
 
-
 #配置环境变量
 
     PORT=3000
 
-    SECRET= your secret jwt 
+    SECRET= your secret jwt
 
 #安装和执行
 
-    npm i 
+    npm i
 
 其它配置信息都在 package.json 中查看
 

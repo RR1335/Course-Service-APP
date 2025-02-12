@@ -1,5 +1,5 @@
-const {User} = require('../models');
-const {NotFound} = require('http-errors')
+const { User } = require('../models');
+const { NotFound } = require('http-errors');
 
 /**
  * 查询当前用户信息
@@ -7,24 +7,23 @@ const {NotFound} = require('http-errors')
  * @returns {Promise<void>}
  */
 async function getUser(req, showPassword = false) {
-    const id = req.userId;
+   const id = req.userId;
 
-    let condition = {};
-    if (!showPassword) {
-        condition = {
-            attributes: { exclude: ['password'] },
-        };
-    }
+   let condition = {};
+   if (!showPassword) {
+      condition = {
+         attributes: { exclude: ['password'] },
+      };
+   }
 
-    const user = await User.findByPk(id, condition);
-    if (!user) {
-        throw new NotFound(`ID: ${ id }的用户未找到。`)
-    }
+   const user = await User.findByPk(id, condition);
+   if (!user) {
+      throw new NotFound(`ID: ${id}的用户未找到。`);
+   }
 
-    return user;
+   return user;
 }
-
 
 module.exports = {
-    getUser
-}
+   getUser,
+};

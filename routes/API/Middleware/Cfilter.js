@@ -1,12 +1,12 @@
-const  express = require("express")
+const express = require('express');
 
 function cfilerBody(req) {
-    return {
-        name: req.body.name,
-        rank: req.body.rank
-    }
+   return {
+      name: req.body.name,
+      rank: req.body.rank,
+   };
 }
 
 module.exports = {
-    cfilerBody
-}
+   cfilerBody,
+};

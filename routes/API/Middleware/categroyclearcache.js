@@ -1,4 +1,3 @@
-
 const { delKey } = require('../../../utils/redis');
 
 /**
@@ -7,14 +6,13 @@ const { delKey } = require('../../../utils/redis');
  * @returns {Promise<void>}
  */
 async function categroyClearCache(category = null) {
-    await delKey('categories');
+   await delKey('categories');
 
-    if (category) {
-        await delKey(`category:${category.id}`);
-    }
+   if (category) {
+      await delKey(`category:${category.id}`);
+   }
 }
 
 module.exports = {
-    categroyClearCache
-}
-
+   categroyClearCache,
+};
