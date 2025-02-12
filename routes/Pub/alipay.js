@@ -45,6 +45,20 @@ router.post('/pay/:platform', userAuth, async function (req, res, next) {
     }
 });
 
+/**
+ * 支付宝异步通知
+ * POST /alipay/notify
+ */
+router.post('/notify', async function (req, res) {
+    try {
+        const alipayData = req.body;
+        logger.info('支付宝异步通知信息：', alipayData);
+
+        res.send('fail');
+    } catch (error) {
+        failure(res, error)
+    }
+});
 
 
 /**
