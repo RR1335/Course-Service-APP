@@ -28,7 +28,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const corsOptions = {
-   origin: ['http://localhost:63342', 'http://baijing.biz'],
+   origin: ['http://localhost:63342',
+      'http://baijing.biz'],
 };
 
 // app.use(cors()) 必须在路由前配置
